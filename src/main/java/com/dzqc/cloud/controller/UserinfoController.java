@@ -21,7 +21,7 @@ public class UserinfoController {
     @Autowired
     private UserService userService;
     /**
-     * 根据手机号查询用户信息
+     * 根据手机号查询用户信息1
      * @return
      */
     @RequestMapping("/user/findByPhone")
