@@ -1,8 +1,11 @@
 package com.dzqc.cloud.entity;
 
+import lombok.Data;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@Data
 public class Userinfo implements Serializable {
     private Integer id;
 
@@ -220,5 +223,8 @@ public class Userinfo implements Serializable {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    public String getUserName() { return username;
     }
 }

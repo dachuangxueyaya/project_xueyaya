@@ -39,6 +39,10 @@
     from userinfo
     where id = #{id,jdbcType=INTEGER}
   </select>
+  <!--登录-->
+  <select id="login">
+    SELECT * FROM users WHERE username=#{username} AND PASSWORD=#{userpassword}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from userinfo
     where id = #{id,jdbcType=INTEGER}

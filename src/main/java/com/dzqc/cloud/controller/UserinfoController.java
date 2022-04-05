@@ -7,24 +7,33 @@ import com.dzqc.cloud.service.UserService;
 import com.dzqc.cloud.util.SendSmsUtil;
 import com.dzqc.cloud.util.VerificationCode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @RestController
 public class UserinfoController {
+
     @Autowired
     private SendSmsUtil sendSmsUtil;
+
     @Autowired
     private UserService userService;
+
     /**
      * 根据手机号查询用户信息
      * @return
      */
-    @RequestMapping("/user/findByPhone")
+    @RequestMapping("/getlogin")
+    public String getlogin() {
+        return "login";
+    }
     /**
      * RequestMapping 是一个用来处理请求地址映射的注解，可用于类或方法上。
      *  用于类上：表示类中的所有响应请求的方法都是以该地址作为父路径
@@ -57,29 +66,39 @@ public class UserinfoController {
 
     /**
      * 用户登陆
-     * @param phone 手机号
-     * @param code 验证码
-     * @return
      */
     @PostMapping("/shiro/login")
-    public ResultObject login(String phone,String code,HttpServletRequest request){
-
-        HttpSession session = request.getSession();
-        //从session中获取验证码
-        String sessionCode = (String)session.getAttribute(phone);
-        //对验证码进行校验
-        if(sessionCode != null && sessionCode.equals(code)){
-            Userinfo userinfo = userService.selectByPhone(phone);
-            if(userinfo == null){
-                return ResultObject.error("号码未注册，请联系管理员");
-            }else{
-                session.setAttribute("userinfo",userinfo);
-                return ResultObject.success(userinfo);
-            }
+    public ModelAndView login(Userinfo user, ModelAndView mv, HttpServletRequest request, Model model){
+        Userinfo login = userService.login(user.getUserName(),user.getPassword());
+        System.out.println(login);
+        if (login!=null){
+            request.getSession().setAttribute("login",login);
+            System.out.println("成功！！");
+            mv.setViewName("index");
         }else{
-            return ResultObject.error("验证码错误或者已经过期");
+            System.out.println("失败！！");
+            mv.setViewName("login");
         }
+        return mv;
     }
+//    public ResultObject login(String phone,String code,HttpServletRequest request){
+//
+//        HttpSession session = request.getSession();
+//        //从session中获取验证码
+//        String sessionCode = (String)session.getAttribute(phone);
+//        //对验证码进行校验
+//        if(sessionCode != null && sessionCode.equals(code)){
+//            Userinfo userinfo = userService.selectByPhone(phone);
+//            if(userinfo == null){
+//                return ResultObject.error("号码未注册，请联系管理员");
+//            }else{
+//                session.setAttribute("userinfo",userinfo);
+//                return ResultObject.success(userinfo);
+//            }
+//        }else{
+//            return ResultObject.error("验证码错误或者已经过期");
+//        }
+//    }
 
     /**
      * 发送验证码

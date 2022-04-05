@@ -9,8 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
+
     @Autowired
     private UserinfoMapper userinfoMapper;
+
+    @Override
+    public Userinfo login(String username, String userpassword){
+        return userinfoMapper.login(username, userpassword);
+    }
+
     @Override
     public Userinfo selectByPhone(String phone) {
         return userinfoMapper.selectByPhone(phone);
